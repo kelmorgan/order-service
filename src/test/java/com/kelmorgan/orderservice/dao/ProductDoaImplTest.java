@@ -2,6 +2,7 @@ package com.kelmorgan.orderservice.dao;
 
 import com.kelmorgan.orderservice.domain.Product;
 import com.kelmorgan.orderservice.domain.ProductStatus;
+import com.kelmorgan.orderservice.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,6 +19,15 @@ class ProductDoaImplTest {
 
     @Autowired
     ProductDoa productDoa;
+    @Autowired
+    ProductRepository productRepository;
+
+    @Test
+    void testCategories() {
+        Product product = productRepository.findByDescription("PRODUCT1");
+
+        assertThat(product.getCategories()).isNotNull();
+    }
 
     @Test
     void save() {
@@ -28,8 +38,8 @@ class ProductDoaImplTest {
         Product saved = productDoa.save(product);
 
         System.out.println(saved);
-        System.out.println("Created Date: "+ saved.getCreatedDate());
-        System.out.println("Modified Date: "+ saved.getLastModifiedDate());
+        System.out.println("Created Date: " + saved.getCreatedDate());
+        System.out.println("Modified Date: " + saved.getLastModifiedDate());
 
         assertThat(saved).isNotNull();
         assertThat(saved.getId()).isNotNull();
@@ -44,12 +54,12 @@ class ProductDoaImplTest {
 
         Product saved = productDoa.save(product);
 
-        System.out.println("Saved Product id: "+ saved.getId());
+        System.out.println("Saved Product id: " + saved.getId());
         Product fetched = productDoa.getProductById(saved.getId());
 
-        System.out.println("Fetched Product: "+ fetched);
-        System.out.println("Fetched CreatedDate: "+ fetched.getCreatedDate());
-        System.out.println("Fetched Id: "+ fetched.getId());
+        System.out.println("Fetched Product: " + fetched);
+        System.out.println("Fetched CreatedDate: " + fetched.getCreatedDate());
+        System.out.println("Fetched Id: " + fetched.getId());
 
         assertThat(fetched).isNotNull();
         assertThat(fetched.getId()).isNotNull();

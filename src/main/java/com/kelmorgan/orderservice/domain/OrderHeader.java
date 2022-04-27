@@ -1,12 +1,12 @@
 package com.kelmorgan.orderservice.domain;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -56,6 +56,14 @@ public class OrderHeader extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
+    @OneToMany(mappedBy = "orderHeader",cascade = CascadeType.PERSIST)
+    @ToString.Exclude
+    private Set<OrderLine> orderLines = new HashSet<>();
+
+    public void addOrderLine(OrderLine orderLine){
+        orderLines.add(orderLine);
+        orderLine.setOrderHeader(this);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,7 +77,8 @@ public class OrderHeader extends BaseEntity {
             return false;
         if (billToAddress != null ? !billToAddress.equals(that.billToAddress) : that.billToAddress != null)
             return false;
-        return orderStatus == that.orderStatus;
+        if (orderStatus != that.orderStatus) return false;
+        return orderLines != null ? orderLines.equals(that.orderLines) : that.orderLines == null;
     }
 
     @Override
@@ -79,6 +88,7 @@ public class OrderHeader extends BaseEntity {
         result = 31 * result + (shippingAddress != null ? shippingAddress.hashCode() : 0);
         result = 31 * result + (billToAddress != null ? billToAddress.hashCode() : 0);
         result = 31 * result + (orderStatus != null ? orderStatus.hashCode() : 0);
+        result = 31 * result + (orderLines != null ? orderLines.hashCode() : 0);
         return result;
     }
 }
